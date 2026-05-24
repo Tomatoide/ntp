@@ -53,7 +53,7 @@
         <!-- Navigation Tabs -->
         <nav class="flex gap-8 border-b border-white/5 mb-8">
             <button onclick="switchTab('dashboard')" id="tab-dashboard" class="pb-4 text-sm font-bold transition-all tab-active">Dashboard</button>
-            <button onclick="switchTab('goals')" id="tab-goals" class="pb-4 text-sm font-bold text-slate-500 hover:text-white transition-all">Yearly Goals</button>
+            <button onclick="switchTab('goals')" id="tab-goals" class="pb-4 text-sm font-bold text-slate-500 hover:text-white transition-all"><span id="yearly-tab-title">2026 Goals</span></button>
         </nav>
 
         <!-- DASHBOARD VIEW -->
@@ -70,7 +70,7 @@
                         <div class="bg-amoled-card px-4 py-2 rounded-2xl border border-amoled flex items-center gap-4">
                             <div class="flex flex-col">
                                 <span class="text-[8px] font-black text-slate-600 uppercase tracking-widest">Date</span>
-                                <span id="formattedDisplayDate" class="text-sm font-black text-indigo-500 font-mono">2024/01/01</span>
+                                <span id="formattedDisplayDate" class="text-sm font-black text-indigo-500 font-mono">2026/01/01</span>
                             </div>
                             <div class="flex items-center gap-1">
                                 <button onclick="changeDate(-1)" class="date-btn p-1.5 hover:bg-white/5 rounded-lg text-slate-400">
@@ -158,9 +158,11 @@
         <!-- GOALS VIEW -->
         <div id="view-goals" class="hidden">
             <header class="flex items-center justify-between mb-10">
-                <div>
-                    <h1 class="text-4xl font-black text-white tracking-tighter">Yearly Goals</h1>
-                    <p class="text-slate-500 font-medium">Big Picture Objectives</p>
+                <div class="flex items-center gap-4">
+                    <h1 class="text-4xl font-black text-white tracking-tighter" id="yearly-heading-title">2026 Goals</h1>
+                    <button onclick="openModal('renameTabModal')" class="p-2 hover:bg-white/5 rounded-xl text-slate-500 hover:text-white transition-all" title="Rename tab category">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" /></svg>
+                    </button>
                 </div>
                 <button onclick="openModal('addGoalModal')" class="bg-white text-black px-6 py-2 rounded-xl font-bold transition-all hover:bg-slate-200">
                     + New Goal
@@ -185,7 +187,7 @@
                 </div>
                 <div>
                     <label class="block text-[10px] font-black text-slate-600 uppercase tracking-widest mb-3">Starting From</label>
-                    <div id="formattedStartDateDisplay" class="text-2xl font-black text-indigo-500 mb-4 font-mono tracking-tighter">2024/01/01</div>
+                    <div id="formattedStartDateDisplay" class="text-2xl font-black text-indigo-500 mb-4 font-mono tracking-tighter">2026/01/01</div>
                     <div class="relative">
                         <input type="date" id="habitStartDate" onchange="syncModalDateLabel()" class="bg-white/5 text-white w-full px-4 py-4 rounded-2xl border border-white/5 opacity-0 absolute inset-0 z-10 cursor-pointer">
                         <div class="bg-white/5 text-slate-500 w-full px-5 py-4 rounded-2xl border border-white/5 text-sm font-bold flex items-center justify-between transition-all hover:bg-white/10">
@@ -206,9 +208,28 @@
         </div>
     </div>
 
+    <!-- Rename Tab Modal -->
+    <div id="renameTabModal" class="hidden fixed inset-0 modal-backdrop flex items-center justify-center p-4 z-50">
+        <div class="bg-black rounded-[2.5rem] p-10 w-full max-w-lg shadow-2xl border border-white/10">
+            <h2 class="text-3xl font-black text-white mb-8 tracking-tighter">Rename Goals Tab</h2>
+            <div class="space-y-6">
+                <div>
+                    <label class="block text-[10px] font-black text-slate-600 uppercase tracking-widest mb-3">Custom Title</label>
+                    <input type="text" id="customGoalsTitleInput" placeholder="E.g. 2026 Goals, Vision, Bucket List" class="bg-white/5 w-full px-5 py-4 rounded-2xl border border-white/10 text-white outline-none">
+                </div>
+                <div class="flex gap-4 mt-10">
+                    <button onclick="closeModal('renameTabModal')" class="flex-1 px-5 py-4 rounded-2xl border border-white/10 text-slate-500 font-bold hover:bg-white/5 transition-all">Cancel</button>
+                    <button onclick="saveCustomGoalsTitle()" class="flex-1 px-5 py-4 rounded-2xl bg-indigo-600 text-white font-black hover:bg-indigo-500 transition-all shadow-xl">Rename</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Yearly Goal Modal (Add & Edit) -->
     <div id="addGoalModal" class="hidden fixed inset-0 modal-backdrop flex items-center justify-center p-4 z-50">
         <div class="bg-black rounded-[2.5rem] p-10 w-full max-w-lg shadow-2xl border border-white/10">
-            <h2 class="text-3xl font-black text-white mb-8 tracking-tighter">Yearly Objective</h2>
+            <h2 id="goalModalTitle" class="text-3xl font-black text-white mb-8 tracking-tighter">Yearly Objective</h2>
+            <input type="hidden" id="editGoalId">
             <div class="space-y-6">
                 <div>
                     <label class="block text-[10px] font-black text-slate-600 uppercase tracking-widest mb-3">Goal Title</label>
@@ -216,16 +237,20 @@
                 </div>
                 <div>
                     <label class="block text-[10px] font-black text-slate-600 uppercase tracking-widest mb-3">Category</label>
-                    <select id="goalCategory" class="bg-white/5 w-full px-5 py-4 rounded-2xl border border-white/10 text-white outline-none">
-                        <option value="Health">Health</option>
-                        <option value="Wealth">Wealth</option>
-                        <option value="Growth">Growth</option>
-                        <option value="Social">Social</option>
-                    </select>
+                    <div class="flex gap-2">
+                        <input type="text" id="goalCategory" placeholder="E.g. Fitness" class="bg-white/5 flex-1 px-5 py-4 rounded-2xl border border-white/10 text-white outline-none">
+                        <select id="goalCategorySelect" onchange="document.getElementById('goalCategory').value = this.value" class="bg-[#0a0a0a] px-3 py-4 rounded-2xl border border-white/10 text-white outline-none">
+                            <option value="">Custom...</option>
+                            <option value="Health">Health</option>
+                            <option value="Wealth">Wealth</option>
+                            <option value="Growth">Growth</option>
+                            <option value="Social">Social</option>
+                        </select>
+                    </div>
                 </div>
                 <div class="flex gap-4 mt-10">
                     <button onclick="closeModal('addGoalModal')" class="flex-1 px-5 py-4 rounded-2xl border border-white/10 text-slate-500 font-bold hover:bg-white/5 transition-all">Cancel</button>
-                    <button onclick="saveGoal()" class="flex-1 px-5 py-4 rounded-2xl bg-indigo-600 text-white font-black hover:bg-indigo-500 transition-all shadow-xl">Add Goal</button>
+                    <button id="saveGoalBtn" onclick="saveGoal()" class="flex-1 px-5 py-4 rounded-2xl bg-indigo-600 text-white font-black hover:bg-indigo-500 transition-all shadow-xl">Add Goal</button>
                 </div>
             </div>
         </div>
@@ -237,6 +262,7 @@
         let logs = JSON.parse(localStorage.getItem('habitStats_v2_logs')) || {};
         let tasks = JSON.parse(localStorage.getItem('habitStats_v2_tasks')) || [];
         let goals = JSON.parse(localStorage.getItem('habitStats_v2_goals')) || [];
+        let customGoalsTitle = localStorage.getItem('habitStats_v2_goals_title') || `${new Date().getFullYear()} Goals`;
         let showArchived = false;
         const dayLabels = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
         let selectedDays = [0, 1, 2, 3, 4, 5, 6]; 
@@ -246,6 +272,7 @@
 
         window.onload = () => {
             generateDayFavicon();
+            updateYearHeadingTitles();
             const dp = document.getElementById('datePicker');
             if (dp) dp.valueAsDate = new Date();
             
@@ -266,6 +293,26 @@
             renderTasks();
             renderGoals();
         };
+
+        function updateYearHeadingTitles() {
+            const tabTitle = document.getElementById('yearly-tab-title');
+            const headingTitle = document.getElementById('yearly-heading-title');
+            if (tabTitle) tabTitle.innerText = customGoalsTitle;
+            if (headingTitle) headingTitle.innerText = customGoalsTitle;
+            
+            const customTitleInput = document.getElementById('customGoalsTitleInput');
+            if (customTitleInput) customTitleInput.value = customGoalsTitle;
+        }
+
+        function saveCustomGoalsTitle() {
+            const input = document.getElementById('customGoalsTitleInput');
+            if (input && input.value.trim() !== '') {
+                customGoalsTitle = input.value.trim();
+                localStorage.setItem('habitStats_v2_goals_title', customGoalsTitle);
+                updateYearHeadingTitles();
+                closeModal('renameTabModal');
+            }
+        }
 
         function generateDayFavicon() {
             const canvas = document.createElement('canvas');
@@ -500,6 +547,7 @@
             });
         }
 
+        // Shared Logic
         function saveData() {
             localStorage.setItem('habitStats_v2_habits', JSON.stringify(habits));
             localStorage.setItem('habitStats_v2_logs', JSON.stringify(logs));
@@ -571,7 +619,7 @@
             });
         }
 
-        function openModal(id, habitId = null) {
+        function openModal(id, extraId = null) {
             const modal = document.getElementById(id);
             if (!modal) return;
             modal.classList.remove('hidden');
@@ -581,8 +629,8 @@
                 const editIdInput = document.getElementById('editHabitId');
                 const titleEl = document.getElementById('modalTitle');
                 const saveBtn = document.getElementById('saveHabitBtn');
-                if (habitId) {
-                    const h = habits.find(h => h.id === habitId);
+                if (extraId) {
+                    const h = habits.find(h => h.id === extraId);
                     if (titleEl) titleEl.innerText = "Configure Habit";
                     if (nameInput) nameInput.value = h.name;
                     if (dateInput) dateInput.value = h.startDate;
@@ -599,6 +647,30 @@
                 }
                 syncModalDateLabel();
                 refreshDayButtons();
+            } else if (id === 'addGoalModal') {
+                const titleInput = document.getElementById('goalTitleInput');
+                const catInput = document.getElementById('goalCategory');
+                const editIdInput = document.getElementById('editGoalId');
+                const saveBtn = document.getElementById('saveGoalBtn');
+                const titleEl = document.getElementById('goalModalTitle');
+                const catSelect = document.getElementById('goalCategorySelect');
+
+                if (extraId) {
+                    const goal = goals.find(g => g.id === extraId);
+                    if (titleEl) titleEl.innerText = "Edit Objective";
+                    if (titleInput) titleInput.value = goal.title;
+                    if (catInput) catInput.value = goal.category;
+                    if (catSelect) catSelect.value = ["Health", "Wealth", "Growth", "Social"].includes(goal.category) ? goal.category : "";
+                    if (editIdInput) editIdInput.value = goal.id;
+                    if (saveBtn) saveBtn.innerText = "Update Goal";
+                } else {
+                    if (titleEl) titleEl.innerText = "Yearly Objective";
+                    if (titleInput) titleInput.value = "";
+                    if (catInput) catInput.value = "";
+                    if (catSelect) catSelect.value = "";
+                    if (editIdInput) editIdInput.value = "";
+                    if (saveBtn) saveBtn.innerText = "Add Goal";
+                }
             }
         }
 
@@ -627,14 +699,42 @@
             URL.revokeObjectURL(url);
         }
 
+        // Goals Management
         function saveGoal() {
             const title = document.getElementById('goalTitleInput').value;
             const category = document.getElementById('goalCategory').value;
+            const editId = document.getElementById('editGoalId').value;
             if (!title) return;
-            goals.push({ id: Date.now(), title, category, progress: 0, completed: false });
+
+            if (editId) {
+                goals = goals.map(g => g.id == editId ? { ...g, title, category } : g);
+            } else {
+                goals.push({ id: Date.now(), title, category, progress: 0, completed: false });
+            }
+
             localStorage.setItem('habitStats_v2_goals', JSON.stringify(goals));
             renderGoals();
             closeModal('addGoalModal');
+        }
+
+        function toggleGoalCompleted(id) {
+            goals = goals.map(g => {
+                if (g.id === id) {
+                    const nextCompleted = !g.completed;
+                    return { ...g, completed: nextCompleted, progress: nextCompleted ? 100 : 0 };
+                }
+                return g;
+            });
+            localStorage.setItem('habitStats_v2_goals', JSON.stringify(goals));
+            renderGoals();
+        }
+
+        function deleteGoal(id) {
+            if (confirm('Delete this goal?')) {
+                goals = goals.filter(g => g.id !== id);
+                localStorage.setItem('habitStats_v2_goals', JSON.stringify(goals));
+                renderGoals();
+            }
         }
 
         function renderGoals() {
@@ -643,12 +743,33 @@
             container.innerHTML = '';
             goals.forEach(goal => {
                 const card = document.createElement('div');
-                card.className = "bg-amoled-card p-8 rounded-[2.5rem] border border-amoled shadow-2xl relative overflow-hidden group";
+                const isCompleted = goal.completed || false;
+                card.className = `bg-amoled-card p-8 rounded-[2.5rem] border ${isCompleted ? 'border-indigo-500/50' : 'border-amoled'} shadow-2xl relative overflow-hidden group transition-all`;
                 card.innerHTML = `
-                    <div class="relative z-10">
-                        <div class="flex justify-between items-start mb-4"><span class="text-[10px] font-black text-indigo-500 uppercase tracking-widest">${goal.category}</span></div>
-                        <h3 class="text-2xl font-black text-white mb-6 leading-tight">${goal.title}</h3>
-                        <div class="w-full bg-white/5 h-1.5 rounded-full overflow-hidden"><div class="bg-indigo-500 h-full" style="width: ${goal.progress}%"></div></div>
+                    <div class="relative z-10 flex flex-col h-full justify-between">
+                        <div>
+                            <div class="flex justify-between items-start mb-4">
+                                <span class="text-[10px] font-black text-indigo-500 uppercase tracking-widest">${goal.category || 'General'}</span>
+                                <div class="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                    <button onclick="openModal('addGoalModal', ${goal.id})" class="text-slate-700 hover:text-white transition-all">
+                                        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                                    </button>
+                                    <button onclick="deleteGoal(${goal.id})" class="text-slate-700 hover:text-red-500 transition-all">
+                                        <svg class="w-4 h-4" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M6 18L18 6M6 6l12 12"/></svg>
+                                    </button>
+                                </div>
+                            </div>
+                            <h3 class="text-2xl font-black ${isCompleted ? 'text-slate-500 line-through' : 'text-white'} mb-6 leading-tight transition-all">${goal.title}</h3>
+                        </div>
+                        
+                        <div class="pt-4">
+                            <button onclick="toggleGoalCompleted(${goal.id})" class="w-full py-4 rounded-2xl border font-black text-xs uppercase tracking-widest ${isCompleted ? 'bg-white text-black border-white' : 'border-white/10 text-slate-400 hover:border-white/30'} transition-all flex items-center justify-center gap-2">
+                                <div class="w-4 h-4 rounded border ${isCompleted ? 'bg-indigo-500 border-indigo-500' : 'border-white/20'} flex items-center justify-center">
+                                    ${isCompleted ? '<svg class="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="4"><path d="M5 13l4 4L19 7"/></svg>' : ''}
+                                </div>
+                                <span>${isCompleted ? 'Completed' : 'Mark Done'}</span>
+                            </button>
+                        </div>
                     </div>`;
                 container.appendChild(card);
             });
